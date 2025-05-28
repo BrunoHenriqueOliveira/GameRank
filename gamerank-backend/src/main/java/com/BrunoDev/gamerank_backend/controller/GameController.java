@@ -1,11 +1,10 @@
 package com.BrunoDev.gamerank_backend.controller;
 
 import com.BrunoDev.gamerank_backend.model.Game;
-import com.BrunoDev.gamerank_backend.model.PreferenceRequest;
 import com.BrunoDev.gamerank_backend.repository.GameRepository;
-
-import com.BrunoDev.gamerank_backend.service.RecommenderService;
+import com.BrunoDev.gamerank_backend.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +13,8 @@ import java.util.List;
 @RequestMapping("/games")
 public class GameController {
 
+    @Autowired
+    private GameService gameService;
     private final GameRepository gameRepository;
 
     public GameController(GameRepository gameRepository) {
@@ -21,7 +22,7 @@ public class GameController {
     }
 
     @GetMapping
-    public List<Game> getAllGames(){
+    public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
 
@@ -29,12 +30,21 @@ public class GameController {
     public Game createGame(@RequestBody Game game) {
         return gameRepository.save(game);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Game> getGameById(@PathVariable String id) {
+        Game game = gameService.getGameById(id);
+        return ResponseEntity.ok(game);
+    }
 
-    @Autowired
-    private RecommenderService recommenderService;
+    @PutMapping("/{id}")
+    public ResponseEntity<Game> updateGame(@PathVariable String id, @RequestBody Game updatedGame) {
+        Game game = gameService.updateGame(id, updatedGame);
+        return ResponseEntity.ok(game);
+    }
 
-    @PostMapping("/recommend")
-    public List<String> getRecommendedGames(@RequestBody PreferenceRequest request) {
-        return recommenderService.getRecommendations(request.getPreference());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteGame(@PathVariable String id) {
+        gameService.deleteGame(id);
+        return ResponseEntity.noContent().build();
     }
 }
