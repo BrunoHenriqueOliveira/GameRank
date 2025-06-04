@@ -1,8 +1,10 @@
 package com.BrunoDev.gamerank_backend.controller;
 
+import com.BrunoDev.gamerank_backend.dto.PreferenceRequest;
 import com.BrunoDev.gamerank_backend.model.Game;
 import com.BrunoDev.gamerank_backend.repository.GameRepository;
 import com.BrunoDev.gamerank_backend.service.GameService;
+import com.BrunoDev.gamerank_backend.service.RecommendationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +13,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
+
 public class GameController {
 
     @Autowired
     private GameService gameService;
     private final GameRepository gameRepository;
+
+    @Autowired
+    private RecommendationService recommendationService;
 
     public GameController(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
@@ -46,5 +52,11 @@ public class GameController {
     public ResponseEntity<Void> deleteGame(@PathVariable String id) {
         gameService.deleteGame(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/games/recommend")
+    public ResponseEntity<List<Game>> getRecommendedGames(@RequestBody PreferenceRequest request) {
+        List<Game> games = recommendationService.getRecommendations(request);
+        return ResponseEntity.ok(games);
     }
 }
