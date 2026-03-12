@@ -1,22 +1,54 @@
+version: "3.9"
+
 services:
-  gamerank-backend:
-    build: ./gamerank-backend
-    container_name: gamerank-backend
-    ports:
-      - "8080:8080"
-    depends_on:
-      - mongo
-    environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/gamerank
-    restart: always
 
   mongo:
     image: mongo
-    container_name: gamerank-mongo
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  recommender-python:
+    build: ./recommender-python
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: mongodb://mongo:27017/gamerankdb
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gamerank-backend:
+    build: ./gamerank-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/gamerankdb
+      RECOMMENDATION_SERVICE_URL: http://recommender-python:5000/recommendations
+    depends_on:
+      mongo:
+        condition: service_healthy
+      recommender-python:
+        condition: service_healthy
+    restart: always
+
+  gamerank-frontend:
+    build: ./gamerank-frontend
+    ports:
+      - "4200:4200"
+    depends_on:
+      - gamerank-backend
     restart: always
 
 volumes:

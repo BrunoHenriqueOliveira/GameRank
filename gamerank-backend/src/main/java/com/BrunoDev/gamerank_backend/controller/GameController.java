@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/games")
-
+@CrossOrigin(origins = "http://localhost:4200")
 public class GameController {
 
     @Autowired
@@ -59,4 +59,9 @@ public class GameController {
         List<Game> games = recommendationService.getRecommendations(request);
         return ResponseEntity.ok(games);
     }
+//    @GetMapping("/games/recommendations")
+//    public ResponseEntity<List<Game>> getRecommendations(@RequestParam String userId) {
+//        List<Game> recommendedGames = recommendationService.getRecommendations(userId);
+//        return ResponseEntity.ok(recommendedGames);
+//    }
 }

@@ -7,6 +7,7 @@ import com.BrunoDev.gamerank_backend.repository.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,25 +17,28 @@ import java.util.Objects;
 @Service
 public class RecommendationService {
 
-    private final RestTemplate restTemplate;
-    private final GameRepository gameRepository;
+    @Autowired
+    private RetryTemplate retryTemplate;
 
-    @Value("${recommendation.service.url}")
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${RECOMMENDATION_SERVICE_URL}")
     private String recommendationServiceUrl;
 
-    public RecommendationService(GameRepository gameRepository) {
-        this.restTemplate = new RestTemplate();
-        this.gameRepository = gameRepository;
-    }
+    @Autowired
+    private GameRepository gameRepository;
 
     public List<Game> getRecommendations(PreferenceRequest request) {
-        ResponseEntity<RecommendationResponse> response = restTemplate.postForEntity(
-                recommendationServiceUrl + "/recommend",
-                request,
-                RecommendationResponse.class
-        );
+        return retryTemplate.execute(context -> {
+            ResponseEntity<RecommendationResponse> response = restTemplate.postForEntity(
+                    recommendationServiceUrl + "/recommend",
+                    request,
+                    RecommendationResponse.class
+            );
 
-        List<String> gameIds = Objects.requireNonNull(response.getBody()).getRecommendedGameIds();
-        return gameRepository.findAllById(gameIds);
+            List<String> gameIds = Objects.requireNonNull(response.getBody()).getRecommendedGameIds();
+            return gameRepository.findAllById(gameIds);
+        });
     }
 }
