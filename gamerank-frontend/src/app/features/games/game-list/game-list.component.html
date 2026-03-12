@@ -1,0 +1,13 @@
+<h2>Lista de Jogos</h2>
+
+<div *ngFor="let game of games" style="border:1px solid #ccc; padding:10px; margin:10px;">
+
+  <h3>{{ game.title }}</h3>
+
+  <p><strong>Gênero:</strong> {{ game.genre }}</p>
+
+  <p><strong>Developer:</strong> {{ game.developer }}</p>
+
+  <p><strong>Reviews:</strong> {{ game.reviews.length }}</p>
+
+</div>
