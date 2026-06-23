@@ -1,37 +1,26 @@
-<div class="game-list-page">
+<div class="catalog-page">
   <header class="page-header">
-    <h1>🎮 GameRank</h1>
+    <h1 class="logo">GameRank</h1>
     <p class="subtitle">Avaliações da comunidade — descubra os melhores jogos</p>
   </header>
 
-  <!-- Loading spinner -->
-  <div class="loading-wrap" *ngIf="loading" aria-live="polite">
-    <div class="spinner" role="status" aria-hidden="false"></div>
-    <div class="loading-text">Carregando jogos…</div>
+  <!-- Loading -->
+  <div class="loading-wrap" *ngIf="loading">
+    <div class="spinner"></div>
+    <span class="loading-text">Carregando catálogo…</span>
   </div>
 
-  <!-- Error message -->
-  <div class="error" *ngIf="error && !loading">
-    ⚠️ <strong>{{ error }}</strong>
+  <!-- Error -->
+  <div class="error-banner" *ngIf="error && !loading">
+    <span>⚠</span> {{ error }}
   </div>
 
-  <!-- Main content: use async pipe to subscribe safely -->
   <ng-container *ngIf="(games$ | async) as games">
     <!-- Empty state -->
-    <div class="empty-state" *ngIf="!loading && games.length === 0">
-      <div class="empty-illustration" aria-hidden="true">
-        <svg width="160" height="120" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="160" height="120" rx="8" fill="#4a4a4a"/>
-          <g fill="#5a5a5a">
-            <rect x="12" y="20" width="136" height="12" rx="3"/>
-            <rect x="12" y="44" width="90" height="8" rx="3"/>
-            <rect x="12" y="62" width="110" height="8" rx="3"/>
-            <rect x="12" y="80" width="50" height="8" rx="3"/>
-          </g>
-        </svg>
-      </div>
+    <div class="empty-state" *ngIf="!loading && games.length === 0 && !error">
+      <div class="empty-icon">🎮</div>
       <h2>Nenhum jogo encontrado</h2>
-      <p>Não há jogos para mostrar. Tente novamente mais tarde ou adicione alguns jogos.</p>
+      <p>O catálogo está vazio. Tente novamente mais tarde.</p>
     </div>
 
     <!-- Grid -->
@@ -39,94 +28,47 @@
       <article
         class="card"
         *ngFor="let game of games; trackBy: trackById"
-        role="article"
-        [attr.aria-label]="game.title + ' card'"
+        (click)="goToDetail(game.id)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="goToDetail(game.id)"
+        [attr.aria-label]="'Ver detalhes de ' + game.title"
       >
-        <!-- Card Header/Cover -->
-        <div class="card-media">
-          <div class="cover-placeholder" [attr.aria-hidden]="true">
-            <span class="cover-initial">{{ getGameInitial(game.title) }}</span>
-          </div>
+        <!-- Cover -->
+        <div class="card-cover">
+          <span class="cover-initial">{{ getGameInitial(game.title) }}</span>
         </div>
 
-        <!-- Card Body -->
+        <!-- Body -->
         <div class="card-body">
-          <!-- Título e Meta -->
           <h3 class="game-title">{{ game.title }}</h3>
-          <div class="meta">
-            <span class="genre" *ngIf="game.genre">📁 {{ game.genre }}</span>
-            <span class="dot" *ngIf="game.genre && game.developer">•</span>
-            <span class="developer" *ngIf="game.developer">👤 {{ game.developer }}</span>
+
+          <div class="game-meta">
+            <span class="meta-badge" *ngIf="game.genre">{{ game.genre }}</span>
+            <span class="meta-dev" *ngIf="game.developer">{{ game.developer }}</span>
           </div>
 
-          <!-- Rating Section -->
-          <div class="rating-row">
-            <div class="avg-rating" *ngIf="getAverageRating(game) as avg">
-              <div class="stars">
-                <span class="star" *ngFor="let filled of getRatingArray(avg)" [class.filled]="filled">★</span>
-              </div>
-              <span class="avg-value">{{ avg }}</span>
-              <span class="reviews-count">({{ game.reviews?.length || 0 }} avaliações)</span>
+          <!-- Rating -->
+          <div class="rating-row" *ngIf="getAverageRating(game) as avg">
+            <div class="stars">
+              <span
+                class="star"
+                *ngFor="let filled of getRatingArray(avg)"
+                [class.filled]="filled"
+              >★</span>
             </div>
-            <div class="no-reviews" *ngIf="!getAverageRating(game)">
-              <span class="muted">Sem avaliações</span>
-            </div>
+            <span class="avg-value">{{ avg }}</span>
+            <span class="review-count">({{ game.reviews?.length || 0 }})</span>
           </div>
-
-          <!-- Reviews Preview -->
-          <div class="reviews-preview" *ngIf="game.reviews?.length">
-            <div class="reviews-list">
-              <div class="review-item" *ngFor="let r of visibleReviews(game)">
-                <div class="review-head">
-                  <strong class="author">{{ r.author }}</strong>
-                  <div class="small-stars">
-                    <span class="star" *ngFor="let filled of getRatingArray(r.rating)" [class.filled]="filled">★</span>
-                  </div>
-                </div>
-                <div class="comment">{{ r.comment }}</div>
-              </div>
-            </div>
-
-            <!-- Show more / collapse button -->
-            <div class="more-row" *ngIf="game.reviews.length > 3">
-              <button
-                class="more-btn"
-                (click)="toggleExpand(game.id)"
-                [attr.aria-expanded]="isExpanded(game.id)"
-              >
-                {{ isExpanded(game.id) ? '▼ Mostrar menos' : '▲ Ver todas as avaliações' }}
-              </button>
-            </div>
-
-            <!-- Expanded: show all reviews -->
-            <div class="reviews-expanded" *ngIf="isExpanded(game.id)">
-              <div class="reviews-list">
-                <div class="review-item" *ngFor="let r of game.reviews">
-                  <div class="review-head">
-                    <strong class="author">{{ r.author }}</strong>
-                    <div class="small-stars">
-                      <span class="star" *ngFor="let filled of getRatingArray(r.rating)" [class.filled]="filled">★</span>
-                    </div>
-                  </div>
-                  <div class="comment">{{ r.comment }}</div>
-                </div>
-              </div>
-            </div>
+          <div class="no-rating" *ngIf="!getAverageRating(game)">
+            Sem avaliações ainda
           </div>
         </div>
 
-        <!-- Card Footer/Actions -->
-        <footer class="card-actions">
-          <button
-            class="action-btn"
-            (click)="toggleExpand(game.id)"
-            [class.active]="isExpanded(game.id)"
-          >
-            {{ isExpanded(game.id) ? '✕ Fechar' : '⭐ Avaliações' }}
-          </button>
-          <span class="spacer"></span>
-          <a class="detail-link" href="#" (click)="$event.preventDefault()">Ver detalhes →</a>
-        </footer>
+        <!-- Footer -->
+        <div class="card-footer">
+          <span class="detail-cta">Ver análise completa →</span>
+        </div>
       </article>
     </div>
   </ng-container>

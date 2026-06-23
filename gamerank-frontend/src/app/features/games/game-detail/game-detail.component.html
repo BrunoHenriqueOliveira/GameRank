@@ -1,0 +1,285 @@
+<div class="min-h-screen bg-dark-900 text-white font-sans">
+
+  <!-- ══════════════════════ TOPBAR ══════════════════════ -->
+  <nav class="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b border-neon-blue/10 bg-dark-900/80 backdrop-blur-xl">
+    <a routerLink="/"
+       class="flex items-center gap-2 text-sm font-semibold text-neon-blue/80 hover:text-neon-blue transition-colors duration-200 group">
+      <span class="group-hover:-translate-x-1 transition-transform duration-200">←</span>
+      Voltar ao catálogo
+    </a>
+    <div class="flex items-center gap-3">
+      <span class="text-sm font-bold tracking-widest uppercase text-white/40">GameRank</span>
+      <div class="critica-ai-badge px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase">
+        Crítica AI
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════ LOADING ══════════════════════ -->
+  <div *ngIf="loading" class="flex flex-col items-center justify-center gap-4 py-32 text-white/40">
+    <div class="w-10 h-10 rounded-full border-2 border-dark-600 border-t-neon-blue animate-spin"></div>
+    <span class="text-sm tracking-widest uppercase">Carregando análise…</span>
+  </div>
+
+  <!-- ══════════════════════ ERROR ══════════════════════ -->
+  <div *ngIf="error && !loading"
+       class="mx-6 mt-6 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm flex items-center gap-2">
+    <span>⚠</span> {{ error }}
+  </div>
+
+  <!-- ══════════════════════ CONTENT ══════════════════════ -->
+  <ng-container *ngIf="!loading && game">
+
+    <!-- ── HERO DO JOGO ── -->
+    <div class="mx-4 mt-6 mb-8 hero-card rounded-2xl overflow-hidden">
+      <div class="absolute inset-0 hero-grid-bg opacity-20 pointer-events-none"></div>
+
+      <div class="relative flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 sm:p-8">
+        <!-- Cover placeholder -->
+        <div class="relative flex-shrink-0">
+          <div class="cover-glow w-[120px] h-[160px] sm:w-[140px] sm:h-[190px] rounded-xl flex items-center justify-center">
+            <div class="absolute inset-0 rounded-xl overflow-hidden">
+              <div class="w-full h-full bg-gradient-to-br from-dark-600 to-dark-800 flex items-center justify-center">
+                <span class="text-6xl sm:text-7xl font-black cover-initial-text select-none">
+                  {{ getInitial(game.title) }}
+                </span>
+              </div>
+              <div class="scan-line absolute inset-x-0 top-0 h-1/3 opacity-10"></div>
+            </div>
+          </div>
+          <!-- Rating badge overlay -->
+          <div *ngIf="avgRating" class="absolute -bottom-3 -right-3 w-12 h-12 rounded-full rating-circle flex items-center justify-center text-sm font-black text-white">
+            {{ avgRating }}
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span *ngIf="game.genre" class="genre-badge px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              {{ game.genre }}
+            </span>
+            <span *ngIf="getYear(game.title)" class="year-badge px-3 py-1 rounded-full text-xs font-semibold text-white/50 border border-white/10">
+              {{ getYear(game.title) }}
+            </span>
+          </div>
+
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight mb-2">
+            {{ game.title }}
+          </h1>
+
+          <p *ngIf="game.developer" class="text-sm text-white/40 mb-4">
+            <span class="text-white/20">Desenvolvido por</span>
+            <span class="text-white/60 font-medium ml-1">{{ game.developer }}</span>
+          </p>
+
+          <div class="flex items-center gap-3" *ngIf="avgRating">
+            <div class="flex items-center gap-0.5">
+              <span *ngFor="let f of getRatingArray(avgRating)"
+                    class="text-lg"
+                    [ngClass]="f ? 'star-on' : 'star-off'">★</span>
+            </div>
+            <span class="text-xl font-bold text-white">{{ avgRating }}</span>
+            <span class="text-sm text-white/30">/ 5.0</span>
+            <span class="text-xs text-white/30 ml-1">
+              ({{ enrichedReviews.length }} {{ enrichedReviews.length === 1 ? 'avaliação' : 'avaliações' }})
+            </span>
+          </div>
+          <p *ngIf="!avgRating" class="text-sm text-white/30 italic">Sem avaliações ainda</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MAIN GRID ── -->
+    <div class="px-4 pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
+
+        <!-- ════════ LEFT: COMENTÁRIOS ════════ -->
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <span class="text-xl">💬</span>
+            <h2 class="text-lg font-bold text-white">Comentários da Comunidade</h2>
+            <span *ngIf="enrichedReviews.length"
+                  class="ml-auto px-2.5 py-0.5 rounded-full text-xs font-bold bg-neon-blue/10 text-neon-blue border border-neon-blue/20">
+              {{ enrichedReviews.length }}
+            </span>
+          </div>
+
+          <!-- Empty reviews -->
+          <div *ngIf="enrichedReviews.length === 0"
+               class="review-card rounded-xl p-8 text-center text-white/30">
+            <p class="text-4xl mb-3">💬</p>
+            <p class="text-sm">Nenhuma avaliação ainda. Seja o primeiro!</p>
+          </div>
+
+          <!-- Reviews feed -->
+          <div class="space-y-4">
+            <article *ngFor="let r of enrichedReviews" class="review-card rounded-xl p-5 flex gap-4 group">
+
+              <!-- Avatar -->
+              <div class="flex-shrink-0">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg"
+                     [style.background]="getAvatarGradient(r.author)">
+                  {{ getInitial(r.author) }}
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <strong class="text-sm font-bold text-white">{{ r.author }}</strong>
+                    <!-- Sentiment badge -->
+                    <span class="sentiment-badge"
+                          [class.badge-positive]="r.sentiment === 'POSITIVO'"
+                          [class.badge-neutral]="r.sentiment === 'NEUTRO'"
+                          [class.badge-negative]="r.sentiment === 'NEGATIVO'">
+                      <span class="badge-dot"></span>
+                      {{ r.sentiment }}
+                    </span>
+                  </div>
+                  <span *ngIf="r.date" class="text-xs text-white/25 flex-shrink-0">{{ formatDate(r.date) }}</span>
+                </div>
+
+                <!-- Stars -->
+                <div class="flex items-center gap-0.5 mb-3">
+                  <span *ngFor="let f of getRatingArray(r.rating)"
+                        class="text-sm"
+                        [ngClass]="f ? 'star-on' : 'star-off'">★</span>
+                  <span class="text-xs text-white/30 ml-2">{{ r.rating }}/5</span>
+                </div>
+
+                <!-- Content -->
+                <p class="text-sm text-white/60 leading-relaxed">{{ r.content }}</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- ════════ RIGHT: AI ANALYSIS CARD ════════ -->
+        <div class="lg:sticky lg:top-[80px]">
+          <div class="ai-card rounded-2xl overflow-hidden">
+
+            <!-- AI Header -->
+            <div class="ai-card-header px-5 py-4 flex items-center gap-3">
+              <div class="ai-icon-wrap w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0">
+                🤖
+              </div>
+              <div class="flex-1">
+                <p class="text-xs font-bold uppercase tracking-[0.15em] text-white/30 mb-0.5">Powered by</p>
+                <h2 class="text-sm font-black uppercase tracking-widest critica-ai-text">Crítica AI</h2>
+              </div>
+              <div class="ai-pulse-dot w-2 h-2 rounded-full bg-neon-blue animate-pulse-slow"></div>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-px bg-gradient-to-r from-transparent via-neon-blue/30 to-transparent"></div>
+
+            <!-- No analysis fallback -->
+            <div *ngIf="!aiAnalysis" class="p-5 text-center text-white/30 text-sm">
+              <p class="text-2xl mb-2">🔍</p>
+              Dados insuficientes para análise.
+            </div>
+
+            <ng-container *ngIf="aiAnalysis">
+
+              <!-- ─ Sentimento Geral ─ -->
+              <div class="px-5 pt-5 pb-4">
+                <p class="text-xs font-bold uppercase tracking-[0.12em] text-white/30 mb-4">Sentimento Geral</p>
+
+                <!-- Tricolor bar -->
+                <div class="sentiment-bar-wrap mb-3">
+                  <div class="flex h-2.5 rounded-full overflow-hidden gap-px">
+                    <div class="sentiment-seg-pos rounded-l-full transition-all duration-700"
+                         [style.width.%]="aiAnalysis.sentimentPositive"></div>
+                    <div class="sentiment-seg-neu transition-all duration-700"
+                         [style.width.%]="aiAnalysis.sentimentNeutral"></div>
+                    <div class="sentiment-seg-neg rounded-r-full transition-all duration-700"
+                         [style.width.%]="aiAnalysis.sentimentNegative"></div>
+                  </div>
+                </div>
+
+                <!-- Legend -->
+                <div class="grid grid-cols-3 gap-2 text-center">
+                  <div class="sentiment-legend-item rounded-lg p-2">
+                    <div class="text-lg font-black text-emerald-400">{{ aiAnalysis.sentimentPositive }}%</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-400/60 mt-0.5">Positivo</div>
+                  </div>
+                  <div class="sentiment-legend-item rounded-lg p-2">
+                    <div class="text-lg font-black text-amber-400">{{ aiAnalysis.sentimentNeutral }}%</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-amber-400/60 mt-0.5">Neutro</div>
+                  </div>
+                  <div class="sentiment-legend-item rounded-lg p-2">
+                    <div class="text-lg font-black text-red-400">{{ aiAnalysis.sentimentNegative }}%</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-red-400/60 mt-0.5">Negativo</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="h-px mx-5 bg-white/5"></div>
+
+              <!-- ─ Resumo ─ -->
+              <div class="px-5 py-4">
+                <p class="text-xs font-bold uppercase tracking-[0.12em] text-white/30 mb-3">Resumo da IA</p>
+                <div class="ai-summary-box rounded-xl p-4">
+                  <p class="text-sm text-white/70 leading-relaxed">
+                    <span class="ai-quote-mark">"</span>{{ aiAnalysis.summary }}<span class="ai-quote-mark">"</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="h-px mx-5 bg-white/5"></div>
+
+              <!-- ─ Prós e Contras ─ -->
+              <div class="px-5 py-4 grid grid-cols-1 gap-4">
+                <!-- Prós -->
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[0.12em] text-emerald-400/70 mb-3 flex items-center gap-2">
+                    <span class="w-4 h-px bg-emerald-400/40 inline-block"></span>
+                    Prós
+                  </p>
+                  <ul class="space-y-2">
+                    <li *ngFor="let pro of aiAnalysis.pros"
+                        class="flex items-start gap-2.5 text-sm text-white/60">
+                      <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+                        <span class="text-emerald-400 text-[9px] font-black leading-none">✓</span>
+                      </span>
+                      {{ pro }}
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Contras -->
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[0.12em] text-red-400/70 mb-3 flex items-center gap-2">
+                    <span class="w-4 h-px bg-red-400/40 inline-block"></span>
+                    Contras
+                  </p>
+                  <ul class="space-y-2">
+                    <li *ngFor="let con of aiAnalysis.cons"
+                        class="flex items-start gap-2.5 text-sm text-white/60">
+                      <span class="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-red-500/15 border border-red-500/30 flex items-center justify-center">
+                        <span class="text-red-400 text-[9px] font-black leading-none">✗</span>
+                      </span>
+                      {{ con }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Footer AI -->
+              <div class="h-px bg-gradient-to-r from-transparent via-neon-blue/20 to-transparent"></div>
+              <div class="px-5 py-3 flex items-center justify-between">
+                <span class="text-[10px] text-white/20 uppercase tracking-widest">Análise gerada automaticamente</span>
+                <span class="text-[10px] critica-ai-text font-bold">Crítica AI v1.0</span>
+              </div>
+
+            </ng-container>
+          </div>
+        </div>
+
+      </div><!-- /grid -->
+    </div><!-- /main -->
+
+  </ng-container>
+</div>
