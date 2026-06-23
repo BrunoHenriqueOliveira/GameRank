@@ -1,75 +1,96 @@
-<div class="catalog-page">
-  <header class="page-header">
-    <h1 class="logo">GameRank</h1>
-    <p class="subtitle">Avaliações da comunidade — descubra os melhores jogos</p>
-  </header>
+<!-- Background decorative orbs -->
+<div class="orb orb-blue" aria-hidden="true"></div>
+<div class="orb orb-purple" aria-hidden="true"></div>
+<div class="orb orb-mid" aria-hidden="true"></div>
 
-  <!-- Loading -->
-  <div class="loading-wrap" *ngIf="loading">
-    <div class="spinner"></div>
-    <span class="loading-text">Carregando catálogo…</span>
-  </div>
+<!-- Navbar -->
+<app-navbar></app-navbar>
 
-  <!-- Error -->
-  <div class="error-banner" *ngIf="error && !loading">
-    <span>⚠</span> {{ error }}
-  </div>
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<main class="page-main">
 
-  <ng-container *ngIf="(games$ | async) as games">
-    <!-- Empty state -->
-    <div class="empty-state" *ngIf="!loading && games.length === 0 && !error">
-      <div class="empty-icon">🎮</div>
-      <h2>Nenhum jogo encontrado</h2>
-      <p>O catálogo está vazio. Tente novamente mais tarde.</p>
+  <!-- ── HERO SECTION ── -->
+  <section class="hero-section">
+
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Powered by Crítica AI
     </div>
 
-    <!-- Grid -->
-    <div class="grid" *ngIf="games.length > 0">
-      <article
-        class="card"
-        *ngFor="let game of games; trackBy: trackById"
-        (click)="goToDetail(game.id)"
-        role="button"
-        tabindex="0"
-        (keydown.enter)="goToDetail(game.id)"
-        [attr.aria-label]="'Ver detalhes de ' + game.title"
-      >
-        <!-- Cover -->
-        <div class="card-cover">
-          <span class="cover-initial">{{ getGameInitial(game.title) }}</span>
-        </div>
+    <h1 class="hero-title">
+      Descubra os Melhores<br>
+      <span class="hero-gradient">Jogos</span>
+    </h1>
 
-        <!-- Body -->
-        <div class="card-body">
-          <h3 class="game-title">{{ game.title }}</h3>
+    <p class="hero-sub">
+      Avaliações reais da comunidade com análise de inteligência artificial
+    </p>
 
-          <div class="game-meta">
-            <span class="meta-badge" *ngIf="game.genre">{{ game.genre }}</span>
-            <span class="meta-dev" *ngIf="game.developer">{{ game.developer }}</span>
-          </div>
-
-          <!-- Rating -->
-          <div class="rating-row" *ngIf="getAverageRating(game) as avg">
-            <div class="stars">
-              <span
-                class="star"
-                *ngFor="let filled of getRatingArray(avg)"
-                [class.filled]="filled"
-              >★</span>
-            </div>
-            <span class="avg-value">{{ avg }}</span>
-            <span class="review-count">({{ game.reviews?.length || 0 }})</span>
-          </div>
-          <div class="no-rating" *ngIf="!getAverageRating(game)">
-            Sem avaliações ainda
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="card-footer">
-          <span class="detail-cta">Ver análise completa →</span>
-        </div>
-      </article>
+    <!-- Search bar -->
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar por jogo, gênero ou estúdio..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch($event)"
+        autocomplete="off"
+        spellcheck="false">
+      <span *ngIf="searchQuery" class="search-clear" (click)="searchQuery=''; onSearch('')">✕</span>
     </div>
-  </ng-container>
-</div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar">
+      <span class="stat-item">
+        <span class="stat-num">{{ allGames.length }}</span>
+        jogos catalogados
+      </span>
+      <span class="stat-divider">·</span>
+      <span class="stat-item" *ngIf="filteredGames.length !== allGames.length">
+        <span class="stat-num result-count">{{ filteredGames.length }}</span>
+        resultado{{ filteredGames.length !== 1 ? 's' : '' }}
+      </span>
+      <span class="stat-item" *ngIf="filteredGames.length === allGames.length">
+        Todos os gêneros
+      </span>
+    </div>
+
+  </section>
+
+  <!-- ── CATALOG SECTION ── -->
+  <section class="catalog-section">
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="loader-ring"></div>
+      <span class="loader-text">Carregando catálogo…</span>
+    </div>
+
+    <!-- Empty search result -->
+    <div *ngIf="!loading && filteredGames.length === 0" class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <h3 class="empty-title">Nenhum resultado</h3>
+      <p class="empty-sub">Tente buscar por outro jogo, gênero ou estúdio.</p>
+      <button class="empty-clear-btn" (click)="searchQuery=''; onSearch('')">Limpar busca</button>
+    </div>
+
+    <!-- Game grid -->
+    <div *ngIf="!loading && filteredGames.length > 0" class="game-grid">
+      <app-game-card
+        *ngFor="let game of filteredGames; trackBy: trackById"
+        [game]="game"
+        (clicked)="goToDetail(game.id)">
+      </app-game-card>
+    </div>
+
+  </section>
+
+  <!-- Footer -->
+  <footer class="page-footer">
+    <span class="footer-brand">GameRank</span>
+    <span class="footer-sep">·</span>
+    <span class="footer-text">Crítica AI v1.0</span>
+  </footer>
+
+</main>

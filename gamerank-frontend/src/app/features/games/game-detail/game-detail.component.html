@@ -80,7 +80,7 @@
                     [ngClass]="f ? 'star-on' : 'star-off'">★</span>
             </div>
             <span class="text-xl font-bold text-white">{{ avgRating }}</span>
-            <span class="text-sm text-white/30">/ 5.0</span>
+            <span class="text-sm text-white/30">/ 10</span>
             <span class="text-xs text-white/30 ml-1">
               ({{ enrichedReviews.length }} {{ enrichedReviews.length === 1 ? 'avaliação' : 'avaliações' }})
             </span>
@@ -100,9 +100,13 @@
             <span class="text-xl">💬</span>
             <h2 class="text-lg font-bold text-white">Comentários da Comunidade</h2>
             <span *ngIf="enrichedReviews.length"
-                  class="ml-auto px-2.5 py-0.5 rounded-full text-xs font-bold bg-neon-blue/10 text-neon-blue border border-neon-blue/20">
+                  class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-neon-blue/10 text-neon-blue border border-neon-blue/20">
               {{ enrichedReviews.length }}
             </span>
+            <button (click)="openModal()" class="add-review-btn ml-auto flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest">
+              <span class="text-base leading-none">+</span>
+              Adicionar Comentário
+            </button>
           </div>
 
           <!-- Empty reviews -->
@@ -282,4 +286,22 @@
     </div><!-- /main -->
 
   </ng-container>
+
+  <!-- ══════════════════════ MODAL ══════════════════════ -->
+  <app-review-form-modal
+    *ngIf="showModal"
+    [gameId]="gameId"
+    (closed)="closeModal()"
+    (reviewCreated)="onReviewCreated($event)">
+  </app-review-form-modal>
+
+  <!-- ══════════════════════ TOAST ══════════════════════ -->
+  <div *ngIf="showToast" class="toast-success fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl">
+    <span class="toast-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-emerald-400 text-sm font-black">✓</span>
+    <div>
+      <p class="text-sm font-bold text-white">Avaliação enviada!</p>
+      <p class="text-xs text-white/45">Obrigado pela sua contribuição.</p>
+    </div>
+  </div>
+
 </div>

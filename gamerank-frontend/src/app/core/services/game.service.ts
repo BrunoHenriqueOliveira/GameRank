@@ -20,4 +20,8 @@ export class GameService {
   getReviews(gameId: string): Observable<Review[]> {
     return this.http.get<Review[]>(`${this.api}/${gameId}/reviews`);
   }
+
+  createReview(gameId: string, data: { author: string; content: string; rating: number }): Observable<Review> {
+    return this.http.post<Review>(`${this.api}/${gameId}/reviews`, data);
+  }
 }

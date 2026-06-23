@@ -1,0 +1,73 @@
+<article class="game-card"
+         (click)="clicked.emit()"
+         (keydown.enter)="clicked.emit()"
+         tabindex="0"
+         role="button"
+         [attr.aria-label]="'Ver detalhes de ' + game.title">
+
+  <!-- ══ COVER ══ -->
+  <div class="cover" [style.background]="game.coverGradient">
+
+    <!-- Grid overlay -->
+    <div class="cover-grid"></div>
+
+    <!-- Bottom ambient glow -->
+    <div class="cover-ambient"
+         [style.background]="'radial-gradient(ellipse 100% 55% at 50% 100%,' + game.accentColor + '28 0%,transparent 100%)'">
+    </div>
+
+    <!-- Scan line animation -->
+    <div class="cover-scan"></div>
+
+    <!-- Big initial letter -->
+    <div class="cover-letter" [style.color]="game.accentColor">{{ initial }}</div>
+
+    <!-- Genre badge (top-left) -->
+    <span class="cover-badge"
+          [style.color]="game.accentColor"
+          [style.background]="badgeBg"
+          [style.borderColor]="badgeBorder">
+      {{ game.genre }}
+    </span>
+
+    <!-- Release year (top-right) -->
+    <span *ngIf="game.releaseYear" class="cover-year">{{ game.releaseYear }}</span>
+
+    <!-- Hover overlay -->
+    <div class="cover-overlay">
+      <div class="overlay-line"></div>
+      <div class="overlay-cta" [style.borderColor]="game.accentColor + '60'" [style.color]="game.accentColor">
+        Ver análise →
+      </div>
+    </div>
+
+  </div><!-- /cover -->
+
+  <!-- ══ INFO ══ -->
+  <div class="card-info">
+
+    <h3 class="card-title">{{ game.title }}</h3>
+    <p class="card-dev">{{ game.developer }}</p>
+
+    <div class="card-meta">
+
+      <!-- Stars + rating -->
+      <div class="stars-row">
+        <span *ngFor="let f of starsFilled"
+              class="star"
+              [class.star-on]="f"
+              [class.star-off]="!f">★</span>
+        <span *ngIf="game.avgRating" class="rating-num">{{ game.avgRating }}</span>
+        <span *ngIf="!game.avgRating" class="rating-none">—</span>
+      </div>
+
+      <!-- AI Sentiment chip -->
+      <div class="ai-chip" [ngClass]="sentimentClass">
+        <span class="chip-dot"></span>
+        <span>IA {{ sentimentText }}</span>
+      </div>
+
+    </div>
+  </div>
+
+</article>

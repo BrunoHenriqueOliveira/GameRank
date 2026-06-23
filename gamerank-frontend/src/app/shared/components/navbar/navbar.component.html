@@ -1,0 +1,33 @@
+<header class="navbar-root">
+  <div class="navbar-inner">
+
+    <!-- Logo -->
+    <a routerLink="/" class="nav-logo group">
+      <div class="logo-gem">🎮</div>
+      <span class="logo-text">GameRank</span>
+    </a>
+
+    <!-- Center nav -->
+    <nav class="nav-links">
+      <a routerLink="/"
+         [routerLinkActiveOptions]="{ exact: true }"
+         routerLinkActive="nav-active"
+         class="nav-item">
+        Home
+      </a>
+      <a routerLink="/about" routerLinkActive="nav-active" class="nav-item">
+        About
+      </a>
+    </nav>
+
+    <!-- Right: badge + avatar -->
+    <div class="nav-right">
+      <div class="ai-badge">
+        <span class="ai-dot-pulse"></span>
+        Crítica AI
+      </div>
+      <div class="user-avatar" title="Usuário">U</div>
+    </div>
+
+  </div>
+</header>

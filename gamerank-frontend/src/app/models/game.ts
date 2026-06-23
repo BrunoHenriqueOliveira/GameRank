@@ -14,3 +14,11 @@ export interface Game {
   developer: string;
   reviews: Review[];
 }
+
+export interface EnrichedGame extends Game {
+  avgRating: number | null;
+  aiSentiment: number | null;
+  releaseYear: number | null;
+  coverGradient: string;
+  accentColor: string;
+}

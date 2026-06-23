@@ -5,6 +5,9 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #111318;
+  background: #050810;
   color: #e8eaf0;
+  font-family: system-ui, -apple-system, sans-serif;
 }
+
+* { box-sizing: border-box; }

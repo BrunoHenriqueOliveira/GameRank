@@ -1,0 +1,129 @@
+<div class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4"
+     (click)="onBackdropClick($event)"
+     role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+  <div class="modal-card w-full max-w-lg">
+
+    <!-- ── Header ── -->
+    <div class="modal-header flex items-center justify-between px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div class="modal-icon w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0">🎮</div>
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30">GameRank</p>
+          <h2 id="modal-title" class="text-sm font-black uppercase tracking-widest modal-title-text">Nova Avaliação</h2>
+        </div>
+      </div>
+      <button (click)="close()" aria-label="Fechar modal"
+              class="modal-close w-8 h-8 rounded-lg flex items-center justify-center text-sm text-white/40 hover:text-white transition-all">
+        ✕
+      </button>
+    </div>
+
+    <div class="modal-divider h-px"></div>
+
+    <!-- ── Form ── -->
+    <form [formGroup]="form" (ngSubmit)="submit()" class="px-6 py-5 space-y-5" novalidate>
+
+      <!-- Author -->
+      <div>
+        <label for="author" class="field-label">Autor <span class="text-red-400/80">*</span></label>
+        <input id="author" formControlName="author" type="text"
+               placeholder="Seu nome"
+               autocomplete="name"
+               class="field-input w-full"
+               [class.is-error]="fieldInvalid('author')">
+        <span *ngIf="fieldInvalid('author')" class="field-error-msg">
+          Nome obrigatório (mín. 2 caracteres)
+        </span>
+      </div>
+
+      <!-- Content -->
+      <div>
+        <label for="content" class="field-label">Avaliação <span class="text-red-400/80">*</span></label>
+        <textarea id="content" formControlName="content" rows="4"
+                  placeholder="Escreva sua avaliação sobre o jogo..."
+                  class="field-input w-full resize-none"
+                  [class.is-error]="fieldInvalid('content')"></textarea>
+        <div class="flex justify-between mt-1">
+          <span *ngIf="fieldInvalid('content')" class="field-error-msg">
+            Avaliação obrigatória (mín. 10 caracteres)
+          </span>
+          <span class="text-[11px] ml-auto"
+                [ngClass]="contentLength < 900 ? 'char-normal' : 'char-warn'">
+            {{ contentLength }}/1000
+          </span>
+        </div>
+      </div>
+
+      <!-- Rating -->
+      <div>
+        <label class="field-label">Nota <span class="text-red-400/80">*</span></label>
+
+        <div class="rating-wrap rounded-xl p-4 space-y-3">
+          <!-- Stars + badge row -->
+          <div class="flex items-center justify-between">
+            <!-- Stars preview -->
+            <div class="flex items-center gap-0.5">
+              <span *ngFor="let f of starsFilled" class="text-xl"
+                    [class.star-on]="f" [class.star-off]="!f">★</span>
+            </div>
+
+            <!-- Label + value badge -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-widest"
+                    [class.text-emerald-400]="ratingClass === 'high'"
+                    [class.text-amber-400]="ratingClass === 'mid'"
+                    [class.text-red-400]="ratingClass === 'low'">
+                {{ ratingLabel }}
+              </span>
+              <div class="rating-badge"
+                   [class.badge-high]="ratingClass === 'high'"
+                   [class.badge-mid]="ratingClass === 'mid'"
+                   [class.badge-low]="ratingClass === 'low'">
+                <span class="text-2xl font-black leading-none">{{ ratingValue }}</span>
+                <span class="text-xs opacity-50 font-bold leading-none">/10</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slider -->
+          <div>
+            <input type="range" formControlName="rating" min="0" max="10" step="1"
+                   class="rating-slider w-full"
+                   [class.slider-high]="ratingClass === 'high'"
+                   [class.slider-mid]="ratingClass === 'mid'"
+                   [class.slider-low]="ratingClass === 'low'">
+            <div class="flex justify-between mt-1 px-0.5">
+              <span *ngFor="let n of [0,1,2,3,4,5,6,7,8,9,10]"
+                    class="text-[9px] font-bold"
+                    [ngClass]="n === ratingValue ? 'tick-active' : 'tick-inactive'">
+                {{ n }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error banner -->
+      <div *ngIf="errorMsg"
+           class="flex items-center gap-2 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm">
+        <span class="flex-shrink-0">⚠</span>
+        <span>{{ errorMsg }}</span>
+      </div>
+
+      <div class="h-px bg-white/5"></div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 pt-1">
+        <button type="button" (click)="close()" class="btn-cancel flex-1 px-4 py-3 rounded-xl text-sm font-bold">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="submitting" class="btn-submit flex-1 px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest flex items-center justify-center gap-2">
+          <span *ngIf="submitting" class="submit-spinner"></span>
+          {{ submitting ? 'Enviando…' : 'Enviar Avaliação' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

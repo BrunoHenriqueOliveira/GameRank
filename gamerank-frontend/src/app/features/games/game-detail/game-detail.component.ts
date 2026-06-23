@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { GameService } from '../../../core/services/game.service';
 import { Game, Review } from '../../../models/game';
+import { ReviewFormModalComponent } from '../review-form-modal/review-form-modal.component';
 
 export interface AiAnalysis {
   sentimentPositive: number;
@@ -21,7 +22,7 @@ export interface EnrichedReview extends Review {
 @Component({
   selector: 'app-game-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ReviewFormModalComponent],
   templateUrl: './game-detail.component.html',
   styleUrls: ['./game-detail.component.css']
 })
@@ -32,6 +33,11 @@ export class GameDetailComponent implements OnInit {
   loading = true;
   error: string | null = null;
   avgRating: number | null = null;
+  gameId = '';
+
+  showModal = false;
+  showToast = false;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   private readonly releaseYears: Record<string, number> = {
     'Halo Infinite': 2021, 'Forza Horizon 5': 2021, 'Gears 5': 2019,
@@ -89,10 +95,10 @@ export class GameDetailComponent implements OnInit {
   constructor(private route: ActivatedRoute, private gameService: GameService) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id')!;
+    this.gameId = this.route.snapshot.paramMap.get('id')!;
     forkJoin({
-      game: this.gameService.getGameById(id),
-      reviews: this.gameService.getReviews(id)
+      game: this.gameService.getGameById(this.gameId),
+      reviews: this.gameService.getReviews(this.gameId)
     }).subscribe({
       next: ({ game, reviews }) => {
         this.game = game;
@@ -111,17 +117,37 @@ export class GameDetailComponent implements OnInit {
     });
   }
 
+  // ── Modal ──────────────────────────────────────────────
+
+  openModal(): void  { this.showModal = true; }
+  closeModal(): void { this.showModal = false; }
+
+  onReviewCreated(review: Review): void {
+    const enriched: EnrichedReview = { ...review, sentiment: this.classifySentiment(review.rating) };
+    this.enrichedReviews = [enriched, ...this.enrichedReviews];
+    this.computeAnalysis();
+    this.triggerToast();
+  }
+
+  private triggerToast(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.showToast = true;
+    this.toastTimer = setTimeout(() => { this.showToast = false; }, 3500);
+  }
+
+  // ── Sentiment (escala 0–10) ─────────────────────────────
+
   private classifySentiment(rating: number): 'POSITIVO' | 'NEUTRO' | 'NEGATIVO' {
-    if (rating >= 4) return 'POSITIVO';
-    if (rating === 3) return 'NEUTRO';
+    if (rating >= 7) return 'POSITIVO';
+    if (rating >= 4) return 'NEUTRO';
     return 'NEGATIVO';
   }
 
   private computeAnalysis(): void {
-    if (!this.enrichedReviews.length) { this.aiAnalysis = null; return; }
+    if (!this.enrichedReviews.length) { this.aiAnalysis = null; this.avgRating = null; return; }
 
     const total = this.enrichedReviews.length;
-    const sum = this.enrichedReviews.reduce((s, r) => s + r.rating, 0);
+    const sum   = this.enrichedReviews.reduce((s, r) => s + r.rating, 0);
     this.avgRating = Math.round((sum / total) * 10) / 10;
 
     const positive = this.enrichedReviews.filter(r => r.sentiment === 'POSITIVO').length;
@@ -147,19 +173,20 @@ export class GameDetailComponent implements OnInit {
 
   private generateSummary(avg: number): string {
     const title = this.game?.title ?? 'Este jogo';
-    if (avg >= 4.5) return `${title} é amplamente aclamado pela comunidade. A experiência é considerada excepcional, com destaque para a qualidade geral da produção. A grande maioria dos jogadores recomenda fortemente.`;
-    if (avg >= 4.0) return `${title} recebe avaliações muito positivas da comunidade. Os jogadores destacam a qualidade geral da experiência, com alguns pontos de melhoria identificados. Um título sólido que vale a pena conferir.`;
-    if (avg >= 3.5) return `${title} inclina-se para o positivo, embora divida algumas opiniões. A maioria dos jogadores encontra valor, mas há críticas consistentes que a desenvolvedora poderia endereçar em futuras atualizações.`;
-    if (avg >= 2.5) return `${title} apresenta recepção mista. Aspectos positivos são reconhecidos, porém a comunidade aponta problemas significativos. Recomendado com ressalvas, especialmente para fãs do gênero.`;
-    return `${title} recebe críticas predominantemente negativas. A comunidade identifica problemas substanciais que prejudicam a experiência. Aguarde melhorias antes de adquirir.`;
+    if (avg >= 9)   return `${title} é amplamente aclamado pela comunidade. A experiência é considerada excepcional e quase unânime entre os jogadores. Um título que define o gênero.`;
+    if (avg >= 8)   return `${title} recebe avaliações muito positivas. Os jogadores destacam a qualidade geral da experiência com poucos pontos negativos. Um título sólido que vale cada centavo.`;
+    if (avg >= 7)   return `${title} inclina-se para o positivo com boa aceitação da comunidade. A maioria encontra valor na experiência, com algumas críticas pontuais que não prejudicam o conjunto.`;
+    if (avg >= 5)   return `${title} apresenta recepção mista. Há pontos positivos reconhecidos, mas também críticas significativas. Recomendado com ressalvas, especialmente para fãs do gênero.`;
+    return `${title} recebe críticas predominantemente negativas. A comunidade aponta problemas que prejudicam a experiência. Aguarde atualizações antes de adquirir.`;
   }
 
-  getYear(title: string): number | null {
-    return this.releaseYears[title] ?? null;
-  }
+  // ── Helpers ────────────────────────────────────────────
+
+  getYear(title: string): number | null { return this.releaseYears[title] ?? null; }
 
   getRatingArray(rating: number): boolean[] {
-    return [1, 2, 3, 4, 5].map(i => i <= Math.round(rating));
+    const filled = Math.round(rating / 2);
+    return [1, 2, 3, 4, 5].map(i => i <= filled);
   }
 
   getInitial(name: string | undefined): string {
