@@ -276,3 +276,15 @@
 @media (max-width: 380px) {
   .game-grid { grid-template-columns: 1fr; }
 }
+
+/* ── Toast ── */
+.toast-success {
+  background: linear-gradient(135deg, rgba(5,8,16,0.95) 0%, rgba(10,20,40,0.95) 100%);
+  border: 1px solid rgba(52,211,153,0.3);
+  box-shadow: 0 0 40px rgba(52,211,153,0.12), 0 20px 60px rgba(0,0,0,0.6);
+  backdrop-filter: blur(12px);
+}
+.toast-icon {
+  background: rgba(52,211,153,0.15);
+  border: 1px solid rgba(52,211,153,0.3);
+}

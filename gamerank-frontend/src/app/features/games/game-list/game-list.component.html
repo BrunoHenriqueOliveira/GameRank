@@ -80,11 +80,30 @@
       <app-game-card
         *ngFor="let game of filteredGames; trackBy: trackById"
         [game]="game"
-        (clicked)="goToDetail(game.id)">
+        (clicked)="goToDetail(game.id)"
+        (rateClicked)="onRateClicked(game, $event)">
       </app-game-card>
     </div>
 
   </section>
+
+  <!-- Modal de avaliação -->
+  <app-review-form-modal
+    *ngIf="modalGame"
+    [gameId]="modalGame.id"
+    [initialRating]="modalInitialRating"
+    (closed)="closeModal()"
+    (reviewCreated)="onReviewCreated($event)">
+  </app-review-form-modal>
+
+  <!-- Toast -->
+  <div *ngIf="showToast" class="toast-success fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl">
+    <span class="toast-icon flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-emerald-400 text-sm font-black">✓</span>
+    <div>
+      <p class="text-sm font-bold text-white">Avaliação enviada!</p>
+      <p class="text-xs text-white/45">Obrigado pela sua contribuição.</p>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="page-footer">

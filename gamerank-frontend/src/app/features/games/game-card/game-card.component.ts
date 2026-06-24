@@ -12,15 +12,39 @@ import { EnrichedGame } from '../../../models/game';
 export class GameCardComponent {
   @Input() game!: EnrichedGame;
   @Output() clicked = new EventEmitter<void>();
+  @Output() rateClicked = new EventEmitter<number>();
+
+  hoverStar = 0;
 
   get initial(): string {
     return (this.game.title || '?').charAt(0).toUpperCase();
+  }
+
+  get filledStars(): number {
+    return this.game.avgRating ? Math.round(this.game.avgRating / 2) : 0;
+  }
+
+  get activeStars(): number {
+    return this.hoverStar > 0 ? this.hoverStar : this.filledStars;
+  }
+
+  get hoverLabel(): string {
+    const labels = ['', 'Péssimo', 'Fraco', 'Regular', 'Bom', 'Excelente'];
+    return labels[this.hoverStar] ?? '';
   }
 
   get starsFilled(): boolean[] {
     if (!this.game.avgRating) return Array(5).fill(false);
     const n = Math.round(this.game.avgRating / 2);
     return [1, 2, 3, 4, 5].map(i => i <= n);
+  }
+
+  onStarHover(star: number): void { this.hoverStar = star; }
+  onStarLeave(): void              { this.hoverStar = 0; }
+
+  onStarClick(star: number, event: MouseEvent): void {
+    event.stopPropagation();
+    this.rateClicked.emit(star);
   }
 
   get sentimentClass(): string {

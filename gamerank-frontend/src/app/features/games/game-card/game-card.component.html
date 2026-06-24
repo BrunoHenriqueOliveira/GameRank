@@ -59,13 +59,17 @@
     <div class="card-meta">
 
       <!-- Stars + rating -->
-      <div class="stars-row">
-        <span *ngFor="let f of starsFilled"
-              class="star"
-              [class.star-on]="f"
-              [class.star-off]="!f">★</span>
-        <span *ngIf="game.avgRating" class="rating-num">{{ game.avgRating }}</span>
-        <span *ngIf="!game.avgRating" class="rating-none">—</span>
+      <div class="stars-row" (mouseleave)="onStarLeave()">
+        <span *ngFor="let star of [1,2,3,4,5]"
+              class="star star-interactive"
+              [class.star-on]="star <= activeStars"
+              [class.star-off]="star > activeStars"
+              [class.star-hover]="hoverStar > 0 && star <= hoverStar"
+              (mouseenter)="onStarHover(star)"
+              (click)="onStarClick(star, $event)">★</span>
+        <span *ngIf="hoverStar > 0" class="rating-hover-label">{{ hoverLabel }}</span>
+        <span *ngIf="hoverStar === 0 && game.avgRating" class="rating-num">{{ game.avgRating }}</span>
+        <span *ngIf="hoverStar === 0 && !game.avgRating" class="rating-none">—</span>
       </div>
 
       <!-- AI Sentiment chip -->

@@ -2,17 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { GameService } from '../../../core/services/game.service';
-import { Game, EnrichedGame } from '../../../models/game';
+import { Game, EnrichedGame, Review } from '../../../models/game';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { GameCardComponent } from '../game-card/game-card.component';
+import { ReviewFormModalComponent } from '../review-form-modal/review-form-modal.component';
 
 interface GenreCover { gradient: string; accent: string; }
 
 @Component({
   selector: 'app-game-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, NavbarComponent, GameCardComponent],
+  imports: [CommonModule, FormsModule, NavbarComponent, GameCardComponent, ReviewFormModalComponent],
   templateUrl: './game-list.component.html',
   styleUrls: ['./game-list.component.css']
 })
@@ -21,6 +24,11 @@ export class GameListComponent implements OnInit {
   filteredGames: EnrichedGame[] = [];
   loading = true;
   searchQuery = '';
+
+  modalGame: EnrichedGame | null = null;
+  modalInitialRating = 7;
+  showToast = false;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
   private readonly RELEASE_YEARS: Record<string, number> = {
     'Halo Infinite': 2021, 'Forza Horizon 5': 2021, 'Gears 5': 2019,
@@ -80,9 +88,29 @@ export class GameListComponent implements OnInit {
   ngOnInit(): void {
     this.gameService.getGames().subscribe({
       next: (games) => {
-        this.allGames = games.map(g => this.enrich(g));
-        this.filteredGames = this.allGames;
-        this.loading = false;
+        if (games.length === 0) {
+          this.allGames = [];
+          this.filteredGames = [];
+          this.loading = false;
+          return;
+        }
+
+        forkJoin(
+          games.map(g =>
+            this.gameService.getReviews(g.id).pipe(catchError(() => of([] as Review[])))
+          )
+        ).subscribe({
+          next: (allReviews) => {
+            this.allGames = games.map((g, i) => this.enrich({ ...g, reviews: allReviews[i] }));
+            this.filteredGames = this.allGames;
+            this.loading = false;
+          },
+          error: () => {
+            this.allGames = games.map(g => this.enrich(g));
+            this.filteredGames = this.allGames;
+            this.loading = false;
+          }
+        });
       },
       error: () => { this.loading = false; }
     });
@@ -101,6 +129,33 @@ export class GameListComponent implements OnInit {
 
   goToDetail(id: string): void {
     this.router.navigate(['games', id]);
+  }
+
+  onRateClicked(game: EnrichedGame, stars: number): void {
+    this.modalGame = game;
+    this.modalInitialRating = stars * 2;
+  }
+
+  closeModal(): void { this.modalGame = null; }
+
+  onReviewCreated(review: Review): void {
+    if (!this.modalGame) return;
+    const target = this.allGames.find(g => g.id === this.modalGame!.id);
+    if (target) {
+      target.reviews = [review, ...(target.reviews ?? [])];
+      const total = target.reviews.length;
+      const sum   = target.reviews.reduce((s, r) => s + r.rating, 0);
+      target.avgRating   = Math.round((sum / total) * 10) / 10;
+      target.aiSentiment = Math.round((target.reviews.filter(r => r.rating >= 7).length / total) * 100);
+    }
+    this.closeModal();
+    this.triggerToast();
+  }
+
+  private triggerToast(): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.showToast = true;
+    this.toastTimer = setTimeout(() => { this.showToast = false; }, 3500);
   }
 
   trackById(_: number, g: EnrichedGame): string { return g.id; }

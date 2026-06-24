@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GameService } from '../../../core/services/game.service';
@@ -11,8 +11,9 @@ import { Review } from '../../../models/game';
   templateUrl: './review-form-modal.component.html',
   styleUrls: ['./review-form-modal.component.css']
 })
-export class ReviewFormModalComponent {
+export class ReviewFormModalComponent implements OnInit {
   @Input() gameId!: string;
+  @Input() initialRating = 7;
   @Output() closed = new EventEmitter<void>();
   @Output() reviewCreated = new EventEmitter<Review>();
 
@@ -26,6 +27,10 @@ export class ReviewFormModalComponent {
       content: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
       rating:  [7,  [Validators.required, Validators.min(0), Validators.max(10)]]
     });
+  }
+
+  ngOnInit(): void {
+    this.form.get('rating')!.setValue(this.initialRating);
   }
 
   @HostListener('document:keydown.escape')

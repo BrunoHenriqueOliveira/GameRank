@@ -1,0 +1,347 @@
+<app-navbar></app-navbar>
+
+<div class="page-root">
+
+  <!-- ── Orbs decorativos ── -->
+  <div class="orb orb-blue"   aria-hidden="true"></div>
+  <div class="orb orb-purple" aria-hidden="true"></div>
+  <div class="orb orb-teal"   aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <section class="hero-section">
+    <div class="hero-left">
+
+      <div class="hero-badges fade-in">
+        <span class="badge badge-live"><span class="badge-pulse"></span>Projeto Ativo</span>
+        <span class="badge badge-tag">v 1.0</span>
+        <span class="badge badge-tag">Portfolio</span>
+      </div>
+
+      <h1 class="hero-title fade-in">
+        <span class="title-game">Game</span><span class="title-rank">Rank</span>
+      </h1>
+      <p class="hero-sub fade-in">Plataforma Full Stack de Avaliação de Jogos</p>
+      <p class="hero-desc fade-in">
+        Projeto de portfólio construído para demonstrar domínio em arquitetura de
+        microsserviços, desenvolvimento full stack moderno e integração entre múltiplas tecnologias.
+      </p>
+
+      <div class="hero-actions fade-in">
+        <a routerLink="/" class="btn-primary">Ver Catálogo <span class="btn-arrow">→</span></a>
+        <a href="https://github.com/BrunoHenriqueOliveira" target="_blank" rel="noopener" class="btn-secondary">
+          <svg viewBox="0 0 24 24" fill="currentColor" class="gh-icon">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+
+      <div class="hero-stack fade-in">
+        <span class="stack-chip" style="color:#dd0031; border-color:#dd003130">Angular</span>
+        <span class="stack-chip" style="color:#6db33f; border-color:#6db33f30">Spring Boot</span>
+        <span class="stack-chip" style="color:#00ed64; border-color:#00ed6430">MongoDB</span>
+        <span class="stack-chip" style="color:#ffd43b; border-color:#ffd43b30">Python Flask</span>
+        <span class="stack-chip" style="color:#2496ed; border-color:#2496ed30">Docker</span>
+      </div>
+    </div>
+
+    <!-- Code block decorativo -->
+    <div class="hero-right fade-in">
+      <div class="code-card">
+        <div class="code-titlebar">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+          <span class="code-filename">gamerank.config.ts</span>
+        </div>
+        <pre class="code-body"><code
+><span class="c-cmt">// GameRank — Full Stack Portfolio</span>
+<span class="c-key">interface</span> <span class="c-type">Stack</span> &#123;
+  frontend : <span class="c-str">"Angular 17"</span>;
+  backend  : <span class="c-str">"Spring Boot 3"</span>;
+  database : <span class="c-str">"MongoDB"</span>;
+  service  : <span class="c-str">"Python Flask"</span>;
+  infra    : <span class="c-str">"Docker Compose"</span>;
+&#125;
+
+<span class="c-key">const</span> <span class="c-var">gamerank</span>: <span class="c-type">Stack</span> = &#123;
+  frontend : <span class="c-str">"Angular 17"</span>,
+  backend  : <span class="c-str">"Spring Boot 3"</span>,
+  database : <span class="c-str">"MongoDB"</span>,
+  service  : <span class="c-str">"Python Flask"</span>,
+  infra    : <span class="c-str">"Docker Compose"</span>,
+&#125;;
+
+<span class="c-key">export default</span> <span class="c-fn">gamerank</span>;</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       01 — SOBRE O PROJETO
+  ══════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-inner">
+
+      <div class="sec-header fade-in">
+        <span class="sec-label">01 — Projeto</span>
+        <h2 class="sec-title">Sobre o <span class="grad">GameRank</span></h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-text fade-in">
+          <p>
+            O <strong>GameRank</strong> foi desenvolvido como um projeto de portfólio com o objetivo
+            de demonstrar conhecimentos práticos em desenvolvimento full stack moderno, arquitetura
+            de microsserviços, integração entre APIs e conteinerização com Docker.
+          </p>
+          <p>
+            A proposta do sistema é funcionar como uma <strong>plataforma de avaliação de jogos
+            eletrônicos</strong>, onde usuários podem visualizar jogos cadastrados, consultar
+            informações e adicionar avaliações com notas e comentários.
+          </p>
+          <p>
+            Durante o desenvolvimento, foram aplicados conceitos como APIs REST, integração
+            frontend/backend, persistência NoSQL, microsserviços, componentes reutilizáveis
+            e arquitetura escalável.
+          </p>
+        </div>
+
+        <div class="highlights-col">
+          <div class="highlight-card fade-in">
+            <span class="hl-icon">🎮</span>
+            <div>
+              <strong>Catálogo de Jogos</strong>
+              <p>Busca, filtros e cards visuais com cover arts e informações detalhadas.</p>
+            </div>
+          </div>
+          <div class="highlight-card fade-in">
+            <span class="hl-icon">⭐</span>
+            <div>
+              <strong>Sistema de Avaliações</strong>
+              <p>Notas de 0–10 com comentários e análise automática de sentimento.</p>
+            </div>
+          </div>
+          <div class="highlight-card fade-in">
+            <span class="hl-icon">🤖</span>
+            <div>
+              <strong>Crítica AI</strong>
+              <p>Dashboard de sentimento positivo / neutro / negativo gerado automaticamente.</p>
+            </div>
+          </div>
+          <div class="highlight-card fade-in">
+            <span class="hl-icon">🔍</span>
+            <div>
+              <strong>Recomendações</strong>
+              <p>Microsserviço Python que sugere jogos com base nas preferências do usuário.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       02 — TECNOLOGIAS
+  ══════════════════════════════════════════ -->
+  <section class="section section-alt">
+    <div class="section-inner">
+
+      <div class="sec-header fade-in">
+        <span class="sec-label">02 — Stack</span>
+        <h2 class="sec-title">Tecnologias <span class="grad">Utilizadas</span></h2>
+      </div>
+
+      <div class="tech-grid">
+        <div *ngFor="let t of technologies" class="tech-card fade-in" [style.--accent]="t.color">
+          <div class="tech-icon-wrap">
+
+            <!-- Angular -->
+            <svg *ngIf="t.icon === 'angular'" viewBox="0 0 250 250" class="tsvg">
+              <polygon fill="#dd0031" points="125,30 162.5,95 175,95 125,15 75,95 87.5,95"/>
+              <polygon fill="#c3002f" points="125,30 87.5,95 75,95 125,233 175,95 162.5,95"/>
+              <polygon fill="rgba(255,255,255,0.87)" points="125,52.1 166.1,162.4 151.7,162.4 140.9,132.7 108.6,132.7 98,162.4 83.5,162.4"/>
+              <polygon fill="rgba(255,255,255,0.87)" points="113,119.4 125,87.4 137,119.4"/>
+            </svg>
+
+            <!-- Spring Boot -->
+            <svg *ngIf="t.icon === 'spring'" viewBox="0 0 24 24" class="tsvg" fill="#6db33f">
+              <path d="M20.59 2.342a10.95 10.95 0 0 1-1.517 2.937A11.08 11.08 0 1 0 3.053 18.088l.173.177A11.079 11.079 0 0 0 21.25 5.893c.21-.37.39-.756.548-1.15.48-1.163.696-2.277.638-3.25a.5.5 0 0 0-.836-.15zM12 20.25a8.25 8.25 0 1 1 0-16.5 8.25 8.25 0 0 1 0 16.5z"/>
+            </svg>
+
+            <!-- MongoDB -->
+            <svg *ngIf="t.icon === 'mongo'" viewBox="0 0 24 24" class="tsvg" fill="#00ed64">
+              <path d="M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.438 3.682-4.74 10.02-.282 5.912 4.27 9.435 4.888 9.884l.07.05A73.49 73.49 0 0 1 11.91 24h.481c.114-1.032.284-2.056.51-3.07.417-.296.604-.463.85-.693a11.342 11.342 0 0 0 3.639-8.464c.01-.814-.103-1.662-.197-2.218z"/>
+            </svg>
+
+            <!-- Python -->
+            <svg *ngIf="t.icon === 'python'" viewBox="0 0 24 24" class="tsvg">
+              <path fill="#3776ab" d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18 3.403 5.963 3.403 5.963h2.032v-2.868s-.109-3.402 3.35-3.402h5.762s3.24.052 3.24-3.13V3.13S18.326 0 11.914 0zm-3.2 1.812a1.042 1.042 0 1 1 0 2.084 1.042 1.042 0 0 1 0-2.084z"/>
+              <path fill="#ffd43b" d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.121S24 18.211 24 12.031c0-6.18-3.403-5.963-3.403-5.963H18.565v2.868s.109 3.402-3.35 3.402H9.453s-3.24-.052-3.24 3.13V20.87S5.674 24 12.086 24zm3.2-1.812a1.042 1.042 0 1 1 0-2.084 1.042 1.042 0 0 1 0 2.084z"/>
+            </svg>
+
+            <!-- Docker -->
+            <svg *ngIf="t.icon === 'docker'" viewBox="0 0 24 24" class="tsvg" fill="#2496ed">
+              <path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.186.186 0 0 0-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/>
+            </svg>
+
+            <!-- TypeScript -->
+            <svg *ngIf="t.icon === 'typescript'" viewBox="0 0 24 24" class="tsvg">
+              <rect width="24" height="24" rx="4" fill="#3178c6"/>
+              <path fill="#fff" d="M13.5 12H11v7.5h-2V12H6.5v-1.5h7V12zm2.19 7.64c.56.3 1.21.46 1.97.46.75 0 1.4-.16 1.95-.5.55-.33.98-.8 1.28-1.4.3-.6.45-1.31.45-2.12v-.42c0-.81-.15-1.52-.45-2.12s-.74-1.07-1.31-1.4c-.57-.33-1.25-.5-2.03-.5-.78 0-1.46.17-2.03.5a3.4 3.4 0 0 0-1.31 1.4c-.3.6-.45 1.31-.45 2.12v.42c0 .81.15 1.52.45 2.12.3.6.75 1.07 1.48 1.44zm.27-5.44c.3-.25.66-.38 1.08-.38.42 0 .78.13 1.08.38.3.25.45.63.45 1.13v.84c0 .5-.15.88-.45 1.13-.3.25-.66.38-1.08.38-.42 0-.78-.13-1.08-.38-.3-.25-.45-.63-.45-1.13v-.84c0-.5.15-.88.45-1.13z"/>
+            </svg>
+
+          </div>
+
+          <h3 class="tech-name" [style.color]="t.color">{{ t.name }}</h3>
+          <span class="tech-role">{{ t.role }}</span>
+          <p class="tech-desc">{{ t.description }}</p>
+          <div class="tech-glow" [style.background]="t.color"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       03 — ARQUITETURA
+  ══════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-inner">
+
+      <div class="sec-header fade-in">
+        <span class="sec-label">03 — Arquitetura</span>
+        <h2 class="sec-title">Como o Sistema <span class="grad">Funciona</span></h2>
+      </div>
+
+      <div class="arch-wrap fade-in">
+        <div class="arch-docker-border">
+          <div class="arch-docker-label">🐳 Docker Compose Network</div>
+
+          <div class="arch-flow">
+
+            <!-- Node: Browser -->
+            <div class="arch-node node-browser">
+              <div class="arch-node-icon">🌐</div>
+              <div class="arch-node-name">Navegador</div>
+              <div class="arch-node-sub">Angular SPA · :4200</div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="arch-connector">
+              <div class="conn-line"></div>
+              <div class="conn-label">HTTP / REST</div>
+              <div class="conn-arrow">▶</div>
+            </div>
+
+            <!-- Node: Spring Boot -->
+            <div class="arch-node node-api">
+              <div class="arch-node-icon">⚡</div>
+              <div class="arch-node-name">API Backend</div>
+              <div class="arch-node-sub">Spring Boot · :8080</div>
+            </div>
+
+            <!-- Fork -->
+            <div class="arch-fork">
+              <div class="fork-branch">
+                <div class="fork-connector">
+                  <div class="fork-line"></div>
+                  <div class="conn-arrow small-arrow">▶</div>
+                </div>
+                <div class="arch-node node-db">
+                  <div class="arch-node-icon">🗄️</div>
+                  <div class="arch-node-name">MongoDB</div>
+                  <div class="arch-node-sub">NoSQL · :27017</div>
+                </div>
+              </div>
+              <div class="fork-branch">
+                <div class="fork-connector">
+                  <div class="fork-line"></div>
+                  <div class="conn-arrow small-arrow">▶</div>
+                </div>
+                <div class="arch-node node-flask">
+                  <div class="arch-node-icon">🐍</div>
+                  <div class="arch-node-name">Recomendações</div>
+                  <div class="arch-node-sub">Python Flask · :5000</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       04 — APRENDIZADOS
+  ══════════════════════════════════════════ -->
+  <section class="section section-alt">
+    <div class="section-inner">
+
+      <div class="sec-header fade-in">
+        <span class="sec-label">04 — Aprendizados</span>
+        <h2 class="sec-title">O que foi <span class="grad">Aprendido</span></h2>
+      </div>
+
+      <div class="learn-grid">
+        <div *ngFor="let l of learnings" class="learn-card fade-in">
+          <div class="learn-icon">{{ l.icon }}</div>
+          <h3 class="learn-title">{{ l.title }}</h3>
+          <p class="learn-text">{{ l.text }}</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       05 — ROADMAP
+  ══════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section-inner">
+
+      <div class="sec-header fade-in">
+        <span class="sec-label">05 — Roadmap</span>
+        <h2 class="sec-title">Próximos <span class="grad">Passos</span></h2>
+      </div>
+
+      <div class="road-grid">
+        <div *ngFor="let g of futureGoals; let i = index" class="road-card fade-in">
+          <div class="road-num">{{ (i + 1).toString().padStart(2, '0') }}</div>
+          <div class="road-body">
+            <strong class="road-label">{{ g.label }}</strong>
+            <p class="road-desc">{{ g.desc }}</p>
+          </div>
+          <span class="road-status">Planejado</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer class="page-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-gem">🎮</span>
+        <span class="footer-name">GameRank</span>
+      </div>
+      <p class="footer-text">
+        Desenvolvido por <strong>Bruno Henrique</strong> · {{ currentYear }}
+      </p>
+      <div class="footer-chips">
+        <span class="f-chip">Full Stack</span>
+        <span class="f-chip">Microsserviços</span>
+        <span class="f-chip">Portfolio</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
