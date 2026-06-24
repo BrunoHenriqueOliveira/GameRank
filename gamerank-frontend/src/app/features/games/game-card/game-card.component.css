@@ -34,6 +34,17 @@
   flex-shrink: 0;
 }
 
+/* Cover image */
+.cover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
+}
+
 .cover-grid {
   position: absolute;
   inset: 0;

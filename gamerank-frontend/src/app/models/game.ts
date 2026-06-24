@@ -21,4 +21,5 @@ export interface EnrichedGame extends Game {
   releaseYear: number | null;
   coverGradient: string;
   accentColor: string;
+  coverImage: string | null;
 }

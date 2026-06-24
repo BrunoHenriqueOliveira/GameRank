@@ -52,6 +52,29 @@ export class GameListComponent implements OnInit {
     accent: '#00c2ff'
   };
 
+  private readonly COVER_IMAGES: Record<string, string> = {
+    'Halo Infinite':                    'assets/covers/halo-infinite.jpg',
+    'Forza Horizon 5':                  'assets/covers/forza-horizon-5.jpg',
+    'Gears 5':                          'assets/covers/gears-5.jpg',
+    'Gears of war':                     'assets/covers/gears-of-war.jpg',
+    'Sea of Thieves':                   'assets/covers/sea-of-thieves.jpg',
+    'Microsoft Flight Simulator':       'assets/covers/microsoft-flight-simulator.jpg',
+    'Ori and the Will of the Wisps':    'assets/covers/ori-will-of-the-wisps.jpg',
+    'Psychonauts 2':                    'assets/covers/psychonauts-2.jpg',
+    'Grounded':                         'assets/covers/grounded.jpg',
+    'The Outer Worlds':                 'assets/covers/the-outer-worlds.jpg',
+    'Starfield':                        'assets/covers/starfield.jpg',
+    'Forza Motorsport':                 'assets/covers/forza-motorsport.jpg',
+    'Age of Empires IV':                'assets/covers/age-of-empires-4.jpg',
+    'Pentiment':                        'assets/covers/pentiment.jpg',
+    'Hi-Fi Rush':                       'assets/covers/hi-fi-rush.jpg',
+    "Senua's Saga: Hellblade II":       'assets/covers/hellblade-2.jpg',
+    'Minecraft Legends':                'assets/covers/minecraft-legends.jpg',
+    'God of War':                       'assets/covers/god-of-war.jpg',
+    'Halo':                             'assets/covers/halo.jpg',
+    'Doom':                             'assets/covers/doom.jpg',
+  };
+
   constructor(private gameService: GameService, private router: Router) {}
 
   ngOnInit(): void {
@@ -98,6 +121,7 @@ export class GameListComponent implements OnInit {
       releaseYear: this.RELEASE_YEARS[g.title] ?? null,
       coverGradient: cover.gradient,
       accentColor: cover.accent,
+      coverImage: this.COVER_IMAGES[g.title] ?? null,
     };
   }
 }

@@ -39,6 +39,29 @@ export class GameDetailComponent implements OnInit {
   showToast = false;
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
+  private readonly coverImages: Record<string, string> = {
+    'Halo Infinite':                    'assets/covers/halo-infinite.jpg',
+    'Forza Horizon 5':                  'assets/covers/forza-horizon-5.jpg',
+    'Gears 5':                          'assets/covers/gears-5.jpg',
+    'Gears of war':                     'assets/covers/gears-of-war.jpg',
+    'Sea of Thieves':                   'assets/covers/sea-of-thieves.jpg',
+    'Microsoft Flight Simulator':       'assets/covers/microsoft-flight-simulator.jpg',
+    'Ori and the Will of the Wisps':    'assets/covers/ori-will-of-the-wisps.jpg',
+    'Psychonauts 2':                    'assets/covers/psychonauts-2.jpg',
+    'Grounded':                         'assets/covers/grounded.jpg',
+    'The Outer Worlds':                 'assets/covers/the-outer-worlds.jpg',
+    'Starfield':                        'assets/covers/starfield.jpg',
+    'Forza Motorsport':                 'assets/covers/forza-motorsport.jpg',
+    'Age of Empires IV':                'assets/covers/age-of-empires-4.jpg',
+    'Pentiment':                        'assets/covers/pentiment.jpg',
+    'Hi-Fi Rush':                       'assets/covers/hi-fi-rush.jpg',
+    "Senua's Saga: Hellblade II":       'assets/covers/hellblade-2.jpg',
+    'Minecraft Legends':                'assets/covers/minecraft-legends.jpg',
+    'God of War':                       'assets/covers/god-of-war.jpg',
+    'Halo':                             'assets/covers/halo.jpg',
+    'Doom':                             'assets/covers/doom.jpg',
+  };
+
   private readonly releaseYears: Record<string, number> = {
     'Halo Infinite': 2021, 'Forza Horizon 5': 2021, 'Gears 5': 2019,
     'Gears of war': 2006, 'Sea of Thieves': 2018, 'Microsoft Flight Simulator': 2020,
@@ -183,6 +206,8 @@ export class GameDetailComponent implements OnInit {
   // ── Helpers ────────────────────────────────────────────
 
   getYear(title: string): number | null { return this.releaseYears[title] ?? null; }
+
+  getCoverImage(title: string): string | null { return this.coverImages[title] ?? null; }
 
   getRatingArray(rating: number): boolean[] {
     const filled = Math.round(rating / 2);
