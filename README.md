@@ -101,6 +101,10 @@ Após a inicialização, acesse:
 
 ## Endpoints da API
 
+A documentação interativa completa está disponível via Swagger UI após subir o projeto:
+
+**http://localhost:8080/swagger-ui/index.html**
+
 ```
 GET    /games                        → Lista todos os jogos
 POST   /games                        → Cadastra um jogo
